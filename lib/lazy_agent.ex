@@ -1,19 +1,5 @@
 defmodule LazyAgent do
-  @moduledoc """
-  TODO
-  Documentation for LazyAgent.
-
-  ## Examples
-
-      iex> {:ok, pid} = LazyAgent.start_link(fn -> 42 end)
-      iex> LazyAgent.get(pid, fn state -> state end)
-      42
-
-      iex> LazyAgent.start_link(fn -> 42 end, name: :lazy)
-      iex> LazyAgent.get(:lazy, fn state -> state end)
-      42
-
-  """
+  @moduledoc File.read!("#{__DIR__}/../README.md")
 
   defstruct started?: false,
             start_fun: nil,
@@ -26,7 +12,8 @@ defmodule LazyAgent do
         }
 
   @doc """
-  TODO
+  Starts an agent linked to the current process with the given function,
+  similar to `Agent.start_link/2`.
   """
   @spec start_link((() -> any), GenServer.options()) :: Agent.on_start()
   def start_link(fun, options \\ []) do
@@ -43,18 +30,41 @@ defmodule LazyAgent do
   end
 
   @doc """
-  TODO
+  Gets an agent value via the given anonymous function, similar to
+  `Agent.get/3`.
+
+  The function fun is sent to the agent which invokes the function passing the
+  agent state. The result of the function invocation is returned from this
+  function.
+
+  If the agent's state was not previously initialized, it will be initialized
+  exactly once for the first call to `LazyAgent.get/3`.
+
+  ## Examples
+
+      iex> {:ok, pid} = LazyAgent.start_link(fn -> 42 end)
+      iex> LazyAgent.get(pid, fn state -> state end)
+      42
+
+      iex> LazyAgent.start_link(fn -> 42 end, name: :lazy)
+      iex> LazyAgent.get(:lazy, fn state -> state end)
+      42
+
   """
-  @spec get(Agent.agent(), (any -> any)) :: any
-  def get(agent, fun) do
+  @spec get(Agent.agent(), (any -> any), timeout()) :: any
+  def get(agent, fun, timeout \\ 5000) do
     if Application.get_env(:lazy_agent, :enabled?) do
-      Agent.get_and_update(agent, fn lazy_state ->
-        new_lazy_state = prepare(lazy_state)
-        get_value = fun.(new_lazy_state.state)
-        {get_value, new_lazy_state}
-      end)
+      Agent.get_and_update(
+        agent,
+        fn lazy_state ->
+          new_lazy_state = prepare(lazy_state)
+          get_value = fun.(new_lazy_state.state)
+          {get_value, new_lazy_state}
+        end,
+        timeout
+      )
     else
-      Agent.get(agent, fun)
+      Agent.get(agent, fun, timeout)
     end
   end
 

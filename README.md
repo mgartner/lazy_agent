@@ -1,5 +1,7 @@
 # LazyAgent
 
+![Hex.pm](https://img.shields.io/hexpm/v/lazy_agent.svg)
+[![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/lazy_agent/LazyAgent.html)
 [![Build Status](https://travis-ci.org/mgartner/lazy_agent.svg?branch=master)](https://travis-ci.org/mgartner/lazy_agent)
 
 LazyAgent wraps Elixir's Agent library to allow delayed execution of the

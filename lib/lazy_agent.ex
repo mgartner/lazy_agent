@@ -68,6 +68,41 @@ defmodule LazyAgent do
     end
   end
 
+  @doc """
+  Updates the agent state via the given anonymous function, similar to
+  `Agent.update/3`.
+
+  The return value of `fun` becomes the new state of the agent.
+
+  If the agent's state was not previously initialized, it will be initialized
+  exactly once for the first call to `LazyAgent.update/3`.
+
+  ## Examples
+
+      iex> {:ok, pid} = LazyAgent.start_link(fn -> 42 end)
+      iex> LazyAgent.update(pid, fn state -> state + 5 end)
+      :ok
+      iex> LazyAgent.get(pid, fn state -> state end)
+      47
+
+  """
+  @spec update(Agent.agent(), (any -> any), timeout()) :: any
+  def update(agent, fun, timeout \\ 5000) do
+    if Application.get_env(:lazy_agent, :enabled?) do
+      Agent.update(
+        agent,
+        fn lazy_state ->
+          new_lazy_state = prepare(lazy_state)
+          new_value = fun.(new_lazy_state.state)
+          %__MODULE__{new_lazy_state | state: new_value}
+        end,
+        timeout
+      )
+    else
+      Agent.update(agent, fun, timeout)
+    end
+  end
+
   @spec prepare(t()) :: t()
   defp prepare(lazy_state = %__MODULE__{started?: true}), do: lazy_state
 

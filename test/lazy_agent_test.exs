@@ -14,12 +14,20 @@ defmodule LazyAgentTest do
       assert Agent.get(pid, & &1) == %LazyAgent{started?: false, start_fun: start_fun, state: nil}
     end
 
-    test "get/2" do
+    test "get/3" do
       start_fun = fn -> 45 end
       {:ok, pid} = LazyAgent.start_link(start_fun)
 
       assert LazyAgent.get(pid, & &1) == 45
       assert Agent.get(pid, & &1) == %LazyAgent{started?: true, start_fun: start_fun, state: 45}
+    end
+
+    test "update/3" do
+      start_fun = fn -> 45 end
+      {:ok, pid} = LazyAgent.start_link(start_fun)
+
+      assert LazyAgent.update(pid, & &1 + 2) == :ok
+      assert Agent.get(pid, & &1) == %LazyAgent{started?: true, start_fun: start_fun, state: 47}
     end
   end
 
@@ -35,11 +43,19 @@ defmodule LazyAgentTest do
       assert LazyAgent.get(pid, & &1) == 45
     end
 
-    test "get/2" do
+    test "get/3" do
       start_fun = fn -> 45 end
       {:ok, pid} = LazyAgent.start_link(start_fun)
 
       assert LazyAgent.get(pid, & &1) == 45
+    end
+
+    test "update/3" do
+      start_fun = fn -> 45 end
+      {:ok, pid} = LazyAgent.start_link(start_fun)
+
+      assert LazyAgent.update(pid, & &1 + 2) == :ok
+      assert LazyAgent.get(pid, & &1) == 47
     end
   end
 end

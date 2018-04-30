@@ -41,16 +41,18 @@ config :lazy_agent, enabled?: true
 
 ## Usage
 
-Currently, LazyAgent only supports wrapping of `Agent.start_link/2` and
-`Agent.get/3`.
+Currently, LazyAgent only supports wrapping of `Agent.start_link/2`,
+`Agent.get/3`, and `Agent.update/3`.
 
 ```elixir
- iex> {:ok, pid} = LazyAgent.start_link(fn -> 42 end)
- iex> LazyAgent.get(pid, fn state -> state end)
- 42
+iex> {:ok, pid} = LazyAgent.start_link(fn -> 42 end)
+iex> LazyAgent.get(pid, fn state -> state end)
+42
 
- iex> LazyAgent.start_link(fn -> 42 end, name: :lazy)
- iex> LazyAgent.get(:lazy, fn state -> state end)
- 42
- ```
+iex> LazyAgent.start_link(fn -> 42 end, name: :lazy)
+iex> LazyAgent.update(:lazy, fn state -> state + 5 end)
+:ok
+iex> LazyAgent.get(:lazy, fn state -> state end)
+47
+```
 

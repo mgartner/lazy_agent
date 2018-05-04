@@ -23,7 +23,7 @@ defmodule LazyAgent.MixProject do
         maintainers: ["Marcus Gartner"],
         licenses: ["MIT"],
         links: %{
-          "GitHub" => @github_url,
+          "GitHub" => @github_url
         }
       ]
     ]

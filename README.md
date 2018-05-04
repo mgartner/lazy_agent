@@ -39,6 +39,16 @@ use Mix.Config
 config :lazy_agent, enabled?: true
 ```
 
+LazyAgent supports [Confex](https://github.com/Nebo15/confex)-style configs, so
+you can rely on environment variables:
+
+```elixir
+use Mix.Config
+
+config :lazy_agent,
+  enabled?: {:system, :boolean, "ENABLE_LAZY_AGENT", true}
+```
+
 ## Usage
 
 Currently, LazyAgent supports the lazy equivalents of:

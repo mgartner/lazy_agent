@@ -37,6 +37,7 @@ defmodule LazyAgent.MixProject do
 
   defp deps do
     [
+      {:confex, "~> 3.3.1"},
       {:ex_doc, "~> 0.18", only: :dev, runtime: false}
     ]
   end

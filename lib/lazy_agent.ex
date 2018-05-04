@@ -22,7 +22,7 @@ defmodule LazyAgent do
   """
   @spec start(start_fun, GenServer.options()) :: Agent.on_start()
   def start(fun, options \\ []) do
-    if Application.get_env(:lazy_agent, :enabled?) do
+    if Confex.get_env(:lazy_agent, :enabled?) do
       Agent.start(
         fn ->
           %__MODULE__{started?: false, start_fun: fun}
@@ -40,7 +40,7 @@ defmodule LazyAgent do
   """
   @spec start_link(start_fun, GenServer.options()) :: Agent.on_start()
   def start_link(fun, options \\ []) do
-    if Application.get_env(:lazy_agent, :enabled?) do
+    if Confex.get_env(:lazy_agent, :enabled?) do
       Agent.start_link(
         fn ->
           %__MODULE__{started?: false, start_fun: fun}
@@ -76,7 +76,7 @@ defmodule LazyAgent do
   """
   @spec get(agent, (state -> term), timeout()) :: term
   def get(agent, fun, timeout \\ 5000) do
-    if Application.get_env(:lazy_agent, :enabled?) do
+    if Confex.get_env(:lazy_agent, :enabled?) do
       Agent.get_and_update(
         agent,
         fn lazy_state ->
@@ -111,7 +111,7 @@ defmodule LazyAgent do
   """
   @spec update(Agent.agent(), (state -> state), timeout()) :: term
   def update(agent, fun, timeout \\ 5000) do
-    if Application.get_env(:lazy_agent, :enabled?) do
+    if Confex.get_env(:lazy_agent, :enabled?) do
       Agent.update(
         agent,
         fn lazy_state ->
@@ -147,7 +147,7 @@ defmodule LazyAgent do
   """
   @spec get_and_update(Agent.agent(), (state -> {term, state}), timeout()) :: term
   def get_and_update(agent, fun, timeout \\ 5000) do
-    if Application.get_env(:lazy_agent, :enabled?) do
+    if Confex.get_env(:lazy_agent, :enabled?) do
       Agent.get_and_update(
         agent,
         fn lazy_state ->
